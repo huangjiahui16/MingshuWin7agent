@@ -69,3 +69,36 @@ python docs\make_release_copy.py
 
 它会生成 `release_copy\`：只含 `src/ docs/ skills/ assets/ start-*.bat .gitignore`，
 并自动检查里面还能不能搜到 Key。
+
+---
+
+## 仓库简介（Repository Description，350 字符上限）
+
+复制下面任一版，粘到仓库首页右侧 About 的齿轮里。中文 257 字符、英文 347 字符，都在限制内。
+
+**中文：**
+
+```
+运行在 Windows 7 SP1 上的桌面 Agent：一句中文说出目标，它自己规划多步、调用工具、看结果再决定下一步——整理文件、读 Office/PDF 文档、查网络、跑命令。纯 Python 标准库（tkinter 自绘界面），不要 Electron / Node / .NET，4G 内存、机械硬盘、32 位老机都能跑。三道内核级资源墙（Job 内存上限、空闲 CPU 优先级、后台 I/O）+ 审批闸 + 越界必询问 + 审计日志 + 熔断，随时可中断、可降级。不绑厂商，任意 OpenAI 兼容接口。
+```
+
+**English：**
+
+```
+Desktop agent for Windows 7 SP1: say a goal in plain words, it plans the steps, calls tools, reads the results and decides next. File cleanup, Office/PDF reading, network and shell tasks. Stdlib only (tkinter), no Electron/Node/.NET; 4GB RAM and 32-bit OK. Kernel-level resource walls, approval gate, audit log, breaker. Any OpenAI-compatible API.
+```
+
+## Topics（标签，比简介更容易被搜到）
+
+在 About 齿轮里把这几个逐个加进 Topics：
+
+```
+windows7  windows-7  desktop-agent  ai-agent  llm  tkinter  python3-8  openai-compatible  deepseek  automation  legacy-hardware  no-dependencies
+```
+
+## 首版 Release 填写建议
+
+- Tag：`v25`
+- Release title：`v25 — 首个可用版本（Win7 SP1 / x86 + x64）`
+- 附件：`明枢Win7-v25.exe`（64 位）、`明枢Win7-x86-v25.exe`（32 位）
+- 说明里写清：首次运行会被 360/火绒拦（程序没签名，加白名单即可）；老机器若报 TLS 握手失败，需打 KB3140245 + KB931125。
