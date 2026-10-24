@@ -1,0 +1,39 @@
+# ---- 明枢Win7 上传 GitHub 前的忽略清单 ----
+# 这个文件挡住所有"不该进仓库"的东西：密钥、会话、记忆、日志、便携运行时、exe。
+
+# 1) 可写数据（这里面有你的 API Key、聊天记录、长期记忆）
+data/
+api.md
+记忆.md
+clip/
+
+# 2) 便携运行时 + 打包产物（runtime 有 117MB，GitHub 单文件上限 100MB 会直接拒绝）
+runtime/
+dist/
+dist_x86/
+build/
+build_x86/
+*.exe
+*.spec
+
+# 3) Python / 临时垃圾
+__pycache__/
+*.py[cod]
+*.log
+fault.log
+crash.log
+tests/_test_tmp*/
+tests/_test_tmp*
+tests/*.out
+
+# 4) 系统垃圾
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# 5) 模板文件要保留（给 clone 的人看格式）
+!docs/api.md.example
+!docs/assistant.example.ini
+!docs/GITHUB.md
+
+# 技能库：仓库里只带 7 个桌面自动化技能（skills/ 下），个人专业向技能不进公开仓库。

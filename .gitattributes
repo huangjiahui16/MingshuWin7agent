@@ -1,0 +1,7 @@
+# 统一换行，避免 Windows/Linux 混用后 bat 失效
+* text=auto
+*.bat text eol=crlf
+*.py  text eol=lf
+*.md  text eol=lf
+*.ico binary
+*.png binary
