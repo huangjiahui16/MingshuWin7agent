@@ -1,13 +1,6 @@
-<img width="690" height="391" alt="image" src="https://github.com/user-attachments/assets/86bbc125-2a08-4040-aef3-2e441e57ee32" /># 明枢Win7（MingShu Win7）
-<img width="1109" height="754" alt="image" src="https://github.com/user-attachments/assets/312e2606-1590-4d93-872b-b51c6e86d2e9" />
+# 明枢Win7（MingShu Win7）
 
-**简体中文**  |
-[English](README.md)
-<img width="897" height="711" alt="image" src="https://github.com/user-attachments/assets/7487fde0-d5b3-49dc-a7bf-b60a97ec8773" />
-
-<img width="1116" height="755" alt="image" src="https://github.com/user-attachments/assets/76484037-aede-44c3-9f01-c88cdbd60644" />
-
-
+**简体中文**  |  [English](README.md)
 
 一个能在 **Windows 7 SP1** 上跑起来的桌面 Agent：你用中文说一句话，它自己去操作电脑——整理文件、读文档、查网络、跑命令，每一步都可以拦、可以看、可以中断。
 
@@ -18,6 +11,16 @@
 
 > 模型在云端（任意 OpenAI 兼容接口），本机只负责工具执行与安全管控。
 > 不绑定厂商：DeepSeek / 通义千问 / Kimi / OpenAI / 本地 Ollama / LM Studio 都行。
+
+## 界面预览
+
+![主界面](https://github.com/user-attachments/assets/86bbc125-2a08-4040-aef3-2e441e57ee32)
+
+![对话与工具卡片](https://github.com/user-attachments/assets/312e2606-1590-4d93-872b-b51c6e86d2e9)
+
+![设置面板](https://github.com/user-attachments/assets/7487fde0-d5b3-49dc-a7bf-b60a97ec8773)
+
+![右下角提醒与附件预览](https://github.com/user-attachments/assets/76484037-aede-44c3-9f01-c88cdbd60644)
 
 ---
 
@@ -282,16 +285,3 @@ python -m PyInstaller --onefile --windowed --name MingShuWin7 ^
 
 MIT License，可自由使用、修改、分发。图标由本项目作者用 AI 生成，随项目一同开源（不用于商业用途）。
 第三方接口（DeepSeek / 通义 / OpenAI 等）请遵守各自服务条款。
-
-<!-- 界面预览：把截图放进 docs/images/ 并命名为 main.png / settings.png / toast.png，
-     然后删掉本段首尾的注释标记（这一行和结尾的 --> ），GitHub 上就会显示出来。
-
-## 界面预览
-
-![主界面](docs/images/main.png)
-
-![设置面板](docs/images/settings.png)
-
-![右下角提醒与粘贴预览](docs/images/toast.png)
-
--->
