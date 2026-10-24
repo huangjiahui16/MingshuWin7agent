@@ -1,109 +1,110 @@
-# 明枢Win7（MingShu Win7）
+# MingShu Win7 (明枢Win7)
 
-一个能在 **Windows 7 SP1** 上跑起来的桌面 Agent：你用中文说一句话，它自己去操作电脑——整理文件、读文档、查网络、跑命令，每一步都可以拦、可以看、可以中断。
+**English**  |  [简体中文](README.zh-CN.md)
 
-- **纯标准库**：界面用 tkinter 自绘，零第三方依赖（不需要 Electron / Node / .NET）
-- **真·智能体**：会自己规划多步、调用工具、看结果、再决定下一步，最后汇报
-- **安全优先**：三道内核级资源墙 + 审批闸 + 越界必询问 + 审计日志 + 熔断
-- **能跑就行**：单机、无 GPU、4G 内存、机械硬盘、32 位系统都能用
 
-> 模型在云端（任意 OpenAI 兼容接口），本机只负责工具执行与安全管控。
-> 不绑定厂商：DeepSeek / 通义千问 / Kimi / OpenAI / 本地 Ollama / LM Studio 都行。
+A desktop agent that runs on **Windows 7 SP1**. You type one sentence in plain language and it works on your PC by itself — tidying files, reading documents, checking the network, running commands. Every step can be watched, approved, or stopped.
+
+- **Standard library only** — the UI is drawn with tkinter. No Electron, no Node, no .NET, no pip packages.
+- **A real agent** — it plans several steps, calls tools, looks at the results, then decides what to do next and reports back.
+- **Safety first** — three kernel-level resource walls, an approval gate, "ask whenever it leaves the workspace", an audit log, and a circuit breaker.
+- **Runs on old hardware** — single machine, no GPU, 4GB RAM, spinning disk, 32-bit system.
+
+> The model runs in the cloud (any OpenAI-compatible endpoint). Your PC only executes tools and enforces the safety rules.
+> No vendor lock-in: DeepSeek, Qwen, Kimi, OpenAI, local Ollama or LM Studio all work.
 
 ---
 
-## 一、系统要求
+## 1. Requirements
 
-| 项 | 要求 |
+| Item | Requirement |
 |---|---|
-| 系统 | Windows 7 SP1 及以上（32 位 / 64 位均可） |
-| Python | 源码运行需要 **3.8**（Win7 支持的最后一个版本）；用 exe 则不需要装 Python |
-| 内存 | 4GB 起（程序自身被限制在 300MB 以内） |
-| 显卡 | 不需要，无 GPU 依赖 |
-| 网络 | 需要能访问你配置的模型接口 |
+| OS | Windows 7 SP1 or later (32-bit and 64-bit) |
+| Python | **3.8** to run from source (the last version supporting Win7). Not needed if you use the exe |
+| RAM | 4GB or more (the app itself is capped at 300MB) |
+| GPU | None |
+| Network | Must reach the model endpoint you configure |
 
 ---
 
-## 二、快速开始
+## 2. Quick start
 
-### 方式 A：直接下 exe（推荐给普通用户）
+### Option A — download the exe (easiest)
 
-到 **Releases** 页面下载：
+Get it from the **Releases** page:
 
-- `明枢Win7.exe` —— 64 位系统
-- `明枢Win7-x86.exe` —— 32 位系统
+- `明枢Win7.exe` — 64-bit Windows
+- `明枢Win7-x86.exe` — 32-bit Windows
 
-双击运行。首次启动会在同目录生成 `data\`（配置、会话、日志都在这），然后在「设置 → 模型接口」里填 API Key 即可。
+Double-click it. On first run it creates a `data\` folder next to the exe (settings, chats and logs live there). Open **Settings → Model API** and paste your API key.
 
-### 方式 B：从源码运行（开发/自定义）
+### Option B — run from source
 
 ```bat
-:: 1) 装 Python 3.8（安装时勾选 Add to PATH）
-:: 2) 复制配置模板
+:: 1) Install Python 3.8 (tick "Add Python to PATH")
+:: 2) Copy the config templates
 copy docs\assistant.example.ini data\assistant.ini
 copy docs\api.md.example api.md
-:: 3) 打开 data\assistant.ini 填 api_key（或启动后在设置里填）
-:: 4) 启动
+:: 3) Put your API key in data\assistant.ini (or in Settings after launch)
+:: 4) Start
 start-gui.bat
 ```
 
-命令行模式：`start-cli.bat`（无界面，适合服务器/脚本调用）。
+Console mode: `start-cli.bat` (no window, good for scripts).
 
 ---
 
-## 三、配置
+## 3. Configuration
 
-### 1. 设置面板（最省事）
+### Settings window
 
-界面上点「设置」，可改：接口地址、API Key、模型名、代理、思考档位、工具结果长度、最大步数、工作目录、权限档位、长期记忆、技能与记忆的强制开关。
+Click **Settings** and you can change the endpoint, API key, model, proxy, thinking level, tool output size, max steps, workspace folder, permission level, long-term memory, and the two force switches.
 
-两个开关（强制执行 Skill / 强制固定记忆）**改完立即生效，不需要重启**；只有正在跑的那一轮会沿用旧设置，结束后自动切到新值。
+The two switches (**Force skills** / **Force long-term memory**) apply **immediately — no restart**. Only the task that is already running keeps the old setting until it finishes.
 
-### 2. `api.md`（多模型预设）
+### `api.md` — model presets
 
-程序根目录的 `api.md` 是一份**人可以直接改**的模型清单，设置面板里也是读它、并写回它：
+`api.md` in the program folder is a plain, hand-editable list of endpoints. The Settings window reads it and writes back to it.
 
 ```ini
-# 当前使用：deepseek
+# Active: deepseek
 
 [deepseek]
-label = DeepSeek（便宜、中文好）
+label = DeepSeek (cheap, good Chinese)
 base_url = https://api.deepseek.com/v1
-api_key = sk-你的Key
+api_key = sk-your-key
 model = deepseek-flash
 
 [qwen]
-label = 通义千问
+label = Qwen (Alibaba DashScope)
 base_url = https://dashscope.aliyuncs.com/compatible-mode/v1
 api_key = 
 model = qwen-plus
 
-# 想预留别的模型，整段用 # 注释掉即可，随时解开
+# Comment a block out with # to keep it as a spare
 #[local]
 #base_url = http://127.0.0.1:1234/v1
 #model = qwen2.5-7b-instruct
 ```
 
-设置面板里选预设 → 点「载入预设」，字段就填好了；想确认能不能连通，点**「测试连通」**（发一个 `max_tokens=1` 的最小请求，把结果写回面板）。
+Pick a preset → **Load preset** fills the fields. **Test connection** sends a tiny `max_tokens=1` request and reports the result in the panel.
 
-### 3. `data\assistant.ini`（高级项）
-
-常用几个：
+### `data\assistant.ini` — advanced
 
 ```ini
 [llm]
 base_url = https://api.deepseek.com/v1
 api_key = 
 model = deepseek-flash
-thinking = off          ; 思考档位 off/low/high/max
+thinking = off          ; off/low/high/max
 
 [agent]
-workspace =             ; 限定可操作的目录，留空 = 整台电脑
+workspace =             ; folder the agent may touch; empty = whole PC
 perm_gear = ask         ; auto/ask/strict/locked
-max_steps = 6           ; 单任务最多几步
-mem_limit_mb = 300      ; 内存墙
-max_procs = 4           ; 子进程上限
-cpu_wall = thread       ; thread（只降工作线程）/ process（整进程 IDLE）
+max_steps = 6
+mem_limit_mb = 300      ; memory wall
+max_procs = 4           ; max child processes
+cpu_wall = thread       ; thread = lower the worker thread only / process = whole process IDLE
 
 [memory]
 enabled = true
@@ -111,178 +112,177 @@ enabled = true
 
 ---
 
-## 四、怎么用
+## 4. How to use it
 
-### 三种模式
+### Three modes
 
-| 模式 | 能干什么 |
+| Mode | What it can do |
 |---|---|
-| **Agent** | 全工具：列目录、读文件、搜索、跑命令、写文件、打开文件、抓网页 |
-| **Plan** | 只读：只能看不能改，适合先分析后动手 |
-| **Ask** | 纯聊天：不调用任何工具，最省 token |
+| **Agent** | Everything: list folders, read files, search, run commands, write files, open files, fetch web pages |
+| **Plan** | Read-only: it can look but never change anything — good for analysis first |
+| **Ask** | Chat only: no tools at all, cheapest in tokens |
 
-### 四档权限
+### Four permission levels
 
-| 档位 | 行为 |
+| Level | Behaviour |
 |---|---|
-| 🟢 自动 | L0/L1（只读、写 logs）免打扰；L2/L3 仍会问你 |
-| 🟡 询问 | 到 L2 免打扰；L3（动系统）必须明确授权 |
-| 🟠 严格 | 只放行只读，其余直接拒绝 |
-| 🔴 锁死 | 全部拒绝 |
+| 🟢 Auto | L0/L1 run silently; L2/L3 still ask you |
+| 🟡 Ask | Up to L2 runs silently; L3 (system changes) needs explicit approval |
+| 🟠 Strict | Only read-only actions; everything else is refused |
+| 🔴 Locked | Refuse everything |
 
-**工作区之外的操作一律弹窗询问**，不受档位影响——这条也不能被长期记忆里的话覆盖。
+**Anything outside the workspace always asks you**, no matter which level is active — and long-term memory can't override that rule.
 
-### 快捷键
+### Keyboard
 
-| 按键 | 作用 |
+| Key | Action |
 |---|---|
-| `Enter` | 发送 |
-| `Shift+Enter` | 换行 |
-| `Esc` | 停止当前任务 |
-| `Ctrl+K` | 命令面板 |
-| `Ctrl+Alt+Q` | 在任意窗口中断当前任务（抢鼠标场景用） |
-| `Ctrl+V` | 粘贴剪贴板里的**文件**或**截图**（自动变附件，带缩略图；鼠标悬停看大图） |
+| `Enter` | Send |
+| `Shift+Enter` | New line |
+| `Esc` | Stop the running task |
+| `Ctrl+K` | Command palette |
+| `Ctrl+Alt+Q` | Stop from any window (for when the mouse is busy) |
+| `Ctrl+V` | Paste **files** or a **screenshot** from the clipboard — it becomes an attachment with a thumbnail (hover for a bigger preview) |
 
-聊天记录里的路径、英文名：**双击即可整段选中并复制**；右键菜单还能复制整条 / 复制当前行 / 全选。
+In the chat log, **double-click a path or an English word to select and copy the whole token**. The right-click menu also offers copy message / copy line / select all.
 
-### 右下角提醒
+### Corner notifications
 
-窗口被最小化或切到别的程序时，任务有结果会在屏幕右下角弹一条：
+When the window is minimised or in the background, a small card slides in at the bottom-right:
 
-- ✓ 绿 — 任务完成（附结论摘要）
-- **? 黄 — 需要你确认**（工作区外操作等，不会自动消失，等你处理）
-- ! 红 — 出错了
-- i 蓝 — 定时任务跑完了
+- ✓ green — task finished (with a short summary)
+- **? amber — needs your approval** (e.g. something outside the workspace); it stays until you deal with it
+- ! red — something failed
+- i blue — a scheduled task finished
 
-点一下就回到主窗口。你正盯着界面的时候不会弹。
+Click the card to bring the main window back. Nothing pops up while you are actively looking at the window.
 
-### 长期记忆
+### Long-term memory
 
-- 说「记住：我每周五下午交周报」→ 存进长期记忆，之后每轮都会带上
-- 也可以直接改根目录的 `记忆.md`（一行一条，`#` 开头是注释）
-- 每个对话的记忆互相隔离，删掉会话会连它学到的记忆一起清掉
-- 不想用就把设置里的「强制固定记忆」关掉（立即生效，不注入也不保存）
+- Say "remember: I hand in a weekly report every Friday afternoon" and it is stored
+- You can also edit `记忆.md` in the program folder (one entry per line, `#` starts a comment)
+- Each chat has its own memory; deleting a chat deletes what that chat learned
+- Turn it off entirely with **Force long-term memory** in Settings (applies at once, nothing is injected or saved)
 
-### 技能库（skills）
+### Skills
 
-`skills\` 下每个文件夹是一个技能，模型按 `SKILL.md` 里的描述判断什么时候该用它。仓库自带 7 个：
+Each folder under `skills\` is one skill. The model reads the `description` in `SKILL.md` to decide when to use it. Seven ship with the project:
 
-| 技能 | 什么时候用 |
+| Skill | When it kicks in |
 |---|---|
-| `win7-files` | 整理文件、批量改名、清理、找大文件/重复文件 |
-| `office-docs` | 读/写 Word、Excel、PPT，从文档里抽文字和表格 |
-| `net-diag` | 上不了网、接口连不上、DNS/代理/TLS 排查 |
-| `system-check` | 看系统信息、判断兼容性、排查卡顿 |
-| `git-github` | 提交代码、整理仓库、准备上传 GitHub |
-| `win7-pitfall` | 写脚本前查 Win7 的坑（编码、路径、DPI、TLS） |
-| `pdf-extract` | 从 PDF 提取文字，判断是不是扫描件 |
+| `win7-files` | Tidying files, batch renaming, cleanup, finding large or duplicate files |
+| `office-docs` | Reading/writing Word, Excel, PowerPoint; pulling text and tables out of documents |
+| `net-diag` | No internet, endpoint unreachable, DNS/proxy/TLS troubleshooting |
+| `system-check` | System info, compatibility checks, tracking down slowdowns |
+| `git-github` | Committing code, cleaning a repo, preparing a GitHub upload |
+| `win7-pitfall` | Win7 gotchas before writing scripts (encoding, paths, DPI, TLS) |
+| `pdf-extract` | Pulling text out of PDFs and telling you if it is a scanned image |
 
-**自己加技能**：新建 `skills\你的技能名\SKILL.md`，开头写上描述就行：
+**Add your own**: create `skills\your-skill\SKILL.md`:
 
 ```markdown
 ---
 name: my-skill
-description: 一句话说清什么时候该用这个技能（模型靠这句话判断）
+description: One sentence saying when this skill should be used (the model relies on this line)
 ---
 
-# 正文：具体步骤、命令、注意事项
+# Body: steps, commands, things to watch out for
 ```
 
-**删技能**：直接删对应文件夹。改完不用重启，下一轮对话就会重新扫描。
+**Remove one**: delete the folder. No restart needed — the list is rescanned on the next turn.
 
-### 中英文界面
+### Chinese / English UI
 
-左下角「对话」上方有语言按钮，点一下整个界面（含帮助页、按钮、提示、右下角通知）立刻切成英文，**模型也会改用英文回答**；选择会记在 `data\ui_state.json`，下次打开沿用。第一次运行默认中文。
+There is a language button just above **Chat** in the left sidebar. One click switches the whole interface (help page, buttons, hints, corner notifications) to English, **and the model starts answering in English**. The choice is saved in `data\ui_state.json` and restored next launch. Chinese is the default on first run.
 
 ---
 
-## 五、安全设计（为什么它不会搞坏你的机器）
+## 5. Safety design — why it won't wreck your machine
 
-| 机制 | 说明 |
+| Mechanism | What it does |
 |---|---|
-| **内存墙** | Job Object：本程序超过 300MB，内核直接杀进程；同时最多 4 个子进程 |
-| **CPU 墙** | 工作线程降到空闲优先级（-15），你一碰键鼠它就排到最后 |
-| **I/O 墙** | 工作线程切后台 I/O 模式，前台程序永远优先 |
-| **审批闸** | 卡在工具注册层，模型绕不过去；工作区之外一律问人 |
-| **审计日志** | 每次工具调用都记一笔（谁、什么级别、批准还是拒绝） |
-| **熔断** | 危险操作 >5 次、写文件 >200 个、工具调用 >60 次 → 转只读，需要人工恢复 |
-| **快照** | 写文件/删除前备份，可从备份恢复 |
-| **可中断** | 界面上有「打断」，任何窗口都能按 `Ctrl+Alt+Q` |
+| **Memory wall** | Job Object: if the app passes 300MB the kernel kills it; max 4 child processes |
+| **CPU wall** | Worker threads drop to idle priority (-15), so you always win when you touch the mouse |
+| **I/O wall** | Worker threads switch to background I/O mode; foreground programs stay first |
+| **Approval gate** | Sits in the tool registry — the model can't bypass it. Anything outside the workspace asks you |
+| **Audit log** | Every tool call is recorded (tool, level, approved or denied) |
+| **Circuit breaker** | More than 5 dangerous actions, 200 file writes, or 60 tool calls → read-only until you step in |
+| **Snapshots** | Files are backed up before writes and deletes; you can restore them |
+| **Always stoppable** | Stop button in the UI, plus `Ctrl+Alt+Q` from any window |
 
 ---
 
-## 六、目录结构
+## 6. Folder layout
 
 ```
-明枢Win7.exe / 明枢Win7-x86.exe   发布用二进制（自己打包才有）
-start-gui.bat / start-cli.bat     源码启动脚本
-api.md                            模型预设（自己填 Key，别提交到仓库）
-记忆.md                            长期记忆（一行一条）
-src\                              源码
-  wb_app.py                         界面（tkinter 自绘）
-  win7_assistant.py                 引擎（主循环 / 工具 / 权限 / 协议）
-  win7_limits.py                    三道资源墙 + 分段计时
-assets\                           图标
-skills\                           技能库
-docs\                             说明文档、模板、性能报告、上传清单
-tests\                            回归测试（python tests\某测试.py）
-data\                             运行时生成：配置、会话、日志、临时图片
+明枢Win7.exe / 明枢Win7-x86.exe   release binaries (if you build them)
+start-gui.bat / start-cli.bat     launchers for source runs
+api.md                            model presets (put your key here, never commit it)
+记忆.md                            long-term memory (one entry per line)
+src\                              source code
+  wb_app.py                         UI (hand-drawn with tkinter)
+  win7_assistant.py                 engine (loop / tools / permissions / protocol)
+  win7_limits.py                    resource walls + timing
+assets\                           icons
+skills\                           skill library
+docs\                             docs, templates, perf report, upload checklist
+tests\                            regression tests (python tests\test_name.py)
+data\                             created at runtime: settings, chats, logs, pasted images
 ```
 
-`data\` 里全是运行数据（`assistant.ini`、`sessions\`、`logs\`、`facts.json`、`perf.jsonl`），删掉就等于恢复出厂设置，但**会话和记忆会一起没**。
+Everything inside `data\` is runtime state (`assistant.ini`, `sessions\`, `logs\`, `facts.json`, `perf.jsonl`). Deleting it resets the app — **but you lose your chats and memory too**.
 
 ---
 
-## 七、常见问题
+## 7. Troubleshooting
 
-**连不上模型 / 报 TLS 握手失败**
-本程序已显式要求 TLS 1.2。老 Win7 还失败的话：① 校准系统时间；② 打根证书更新（KB931125）；③ 打启用 TLS 1.2 的补丁（KB3140245）；④ 换线路或检查代理。
+**Can't reach the model / TLS handshake failed**
+TLS 1.2 is requested explicitly. On an old Win7 machine also: (1) sync the system clock; (2) install the root certificate update (KB931125); (3) install the TLS 1.2 patch (KB3140245); (4) switch endpoint or check your proxy.
 
-**证书校验失败**
-同上，多半是系统时间不准或根证书太旧，程序会直接告诉你是哪一类。
+**Certificate verification failed**
+Usually a wrong system clock or outdated root certificates. The app tells you which one it looks like.
 
-**360/火绒拦住了 exe**
-PyInstaller 打包的程序没有代码签名，首次运行常被拦。把程序加入白名单即可。
+**Antivirus blocks the exe**
+PyInstaller binaries are unsigned, so 360/Windows Defender often block them the first time. Add an exclusion.
 
-**任务栏图标不是我的图标**
-Windows 图标缓存会回放旧图标。重启资源管理器，或运行 `ie4uinit.exe -show`。
+**Taskbar shows the wrong icon**
+Windows caches old icons. Restart Explorer, or run `ie4uinit.exe -show`.
 
-**感觉比 Win11 上的客户端慢**
-先用 `python docs\bench_perf.py` 看三段占比。实测本地读写在总耗时里只占 1% 左右，时间几乎全在等模型返回——想快就减少工具轮次，而不是优化磁盘。
+**Feels slower than the Windows 11 client**
+Run `python docs\bench_perf.py` and look at the three-way split. In our measurement local disk work was about 1% of total time — almost all of it is waiting for the model. Reduce tool rounds instead of optimising disk code.
 
-**token 花得快**
-调小 `max_steps`、关掉思考档位、关掉「强制执行 Skill」、把工具结果长度调到 1000 左右。
+**Burning through tokens**
+Lower `max_steps`, set thinking to `off`, turn off **Force skills**, and cut the tool output limit to about 1000 characters.
 
 ---
 
-## 八、自己打包 exe
+## 8. Building the exe yourself
 
 ```bat
-:: 需要 Python 3.8 + PyInstaller
+:: needs Python 3.8 + PyInstaller
 python -m pip install pyinstaller==5.13.2
 python -m PyInstaller --onefile --windowed --name MingShuWin7 ^
   --icon assets\mingshu.ico --add-data "assets;assets" ^
   --paths src --distpath dist --workpath build src\wb_app.py
 ```
 
-产物在 `dist\`，拷走 exe 就能用。
+The binary lands in `dist\` and is self-contained.
 
 ---
 
-## 九、许可
+## 9. License
 
-MIT License，可自由使用、修改、分发。图标由本项目作者用 AI 生成，随项目一同开源（不用于商业用途）。
-第三方接口（DeepSeek / 通义 / OpenAI 等）请遵守各自服务条款。
+MIT. Use it, change it, ship it. The icon was generated by the project author with an AI tool and is released with the project (non-commercial use only for the artwork). Respect the terms of whichever model provider you point it at.
 
-<!-- 界面预览：把截图放进 docs/images/ 并命名为 main.png / settings.png / toast.png，
-     然后删掉本段首尾的注释标记（这一行和结尾的 --> ），GitHub 上就会显示出来。
+<!-- Screenshots: put your images into docs/images/ named main.png / settings.png / toast.png,
+     then delete the comment markers at the top and bottom of this block (this line and the closing -->).
 
-## 界面预览
+## Screenshots
 
-![主界面](docs/images/main.png)
+![Main window](docs/images/main.png)
 
-![设置面板](docs/images/settings.png)
+![Settings](docs/images/settings.png)
 
-![右下角提醒与粘贴预览](docs/images/toast.png)
+![Tray notification and paste preview](docs/images/toast.png)
 
 -->

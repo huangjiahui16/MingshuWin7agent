@@ -72,21 +72,40 @@ python docs\make_release_copy.py
 
 ---
 
-## 仓库简介（Repository Description，350 字符上限）
+## 仓库简介（Repository Description）
 
-复制下面任一版，粘到仓库首页右侧 About 的齿轮里。中文 257 字符、英文 347 字符，都在限制内。
+Description 只显示在仓库名下面一行，作用是**让人在搜索结果里愿意点进来**，不是用来说明产品。上限 350 字符。
 
-**中文：**
+这个项目面向世界用户，所以**默认推荐英文版**（英文 347 字符）。中文用户进仓库后会看到 README 顶部的中文切换链接。
+
+### 推荐：英文
+
+```
+Desktop agent for Windows 7 SP1: say a goal in plain words, it plans the steps, calls tools, reads the results and decides next. File cleanup, Office/PDF reading, network and shell tasks. Stdlib only (tkinter), no Electron/Node/.NET; 4GB RAM and 32-bit OK. Kernel-level resource walls, approval gate, audit log, breaker. Any OpenAI-compatible API.
+```
+
+### 可选：中英双语（232 字符，塞得下但会显得挤）
+
+```
+Desktop agent for Windows 7 SP1 - say a goal, it plans steps, calls tools, reads results: files, Office/PDF, network, shell. Stdlib only, no Electron/Node. | 运行在 Win7 SP1 上的桌面 Agent：一句目标，它自己规划多步、调工具、看结果，整理文件/读文档/查网络，纯标准库零依赖，三道内核资源墙。
+```
+
+### 可选：纯中文（257 字符，只在确定不面向海外时用）
 
 ```
 运行在 Windows 7 SP1 上的桌面 Agent：一句中文说出目标，它自己规划多步、调用工具、看结果再决定下一步——整理文件、读 Office/PDF 文档、查网络、跑命令。纯 Python 标准库（tkinter 自绘界面），不要 Electron / Node / .NET，4G 内存、机械硬盘、32 位老机都能跑。三道内核级资源墙（Job 内存上限、空闲 CPU 优先级、后台 I/O）+ 审批闸 + 越界必询问 + 审计日志 + 熔断，随时可中断、可降级。不绑厂商，任意 OpenAI 兼容接口。
 ```
 
-**English：**
+## README 的语言布局
 
-```
-Desktop agent for Windows 7 SP1: say a goal in plain words, it plans the steps, calls tools, reads the results and decides next. File cleanup, Office/PDF reading, network and shell tasks. Stdlib only (tkinter), no Electron/Node/.NET; 4GB RAM and 32-bit OK. Kernel-level resource walls, approval gate, audit log, breaker. Any OpenAI-compatible API.
-```
+一个仓库只放一份代码，语言靠两份 README 切换，不需要建两个项目：
+
+| 文件 | 语言 | 说明 |
+| --- | --- | --- |
+| `README.md` | 英文 | GitHub 默认显示这份，世界用户先看到英文 |
+| `README.zh-CN.md` | 中文 | 顶部有 `[English](README.md)` 可以翻回去 |
+
+两份顶部都有一行语言切换条，互相链接。以后要加日文、俄文，照这个样子再加 `README.ja.md` 即可。
 
 ## Topics（标签，比简介更容易被搜到）
 
@@ -99,6 +118,6 @@ windows7  windows-7  desktop-agent  ai-agent  llm  tkinter  python3-8  openai-co
 ## 首版 Release 填写建议
 
 - Tag：`v25`
-- Release title：`v25 — 首个可用版本（Win7 SP1 / x86 + x64）`
+- Release title：`v25 - First usable release (Win7 SP1 / x86 + x64)`
 - 附件：`明枢Win7-v25.exe`（64 位）、`明枢Win7-x86-v25.exe`（32 位）
 - 说明里写清：首次运行会被 360/火绒拦（程序没签名，加白名单即可）；老机器若报 TLS 握手失败，需打 KB3140245 + KB931125。
