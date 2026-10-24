@@ -1,6 +1,12 @@
-# 明枢Win7（MingShu Win7）
+<img width="690" height="391" alt="image" src="https://github.com/user-attachments/assets/86bbc125-2a08-4040-aef3-2e441e57ee32" /># 明枢Win7（MingShu Win7）
+<img width="1109" height="754" alt="image" src="https://github.com/user-attachments/assets/312e2606-1590-4d93-872b-b51c6e86d2e9" />
 
-**简体中文**  |  [English](README.md)
+**简体中文**  |
+[English](README.md)
+<img width="897" height="711" alt="image" src="https://github.com/user-attachments/assets/7487fde0-d5b3-49dc-a7bf-b60a97ec8773" />
+
+<img width="1116" height="755" alt="image" src="https://github.com/user-attachments/assets/76484037-aede-44c3-9f01-c88cdbd60644" />
+
 
 
 一个能在 **Windows 7 SP1** 上跑起来的桌面 Agent：你用中文说一句话，它自己去操作电脑——整理文件、读文档、查网络、跑命令，每一步都可以拦、可以看、可以中断。
